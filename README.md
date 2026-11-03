@@ -1,36 +1,33 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# RouteMotion Studio
 
-## Getting Started
+Estúdio para revisar e animar percursos GPX em 2D/3D. O GPX original é preservado. Sem token, o app funciona em modo fixture; com token, ativa Mapbox GL JS, terreno, edifícios, câmera follow e participante 3D via Three.js.
 
-First, run the development server:
+## Executar
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Checks:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm lint
+pnpm typecheck
+pnpm build
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Fluxo implementado
 
-## Learn More
+- Fixture de demonstração sem credenciais.
+- Upload local de `.gpx` com limite de 10 MB e 50.000 pontos.
+- Validação de coordenadas e rejeição de DTD/entidades externas.
+- Traçado original, associado simulado e camada de animação.
+- Mapbox GL JS com fontes/layers GeoJSON persistentes, terreno e buildings quando disponíveis.
+- Camada customizada Three.js compartilhando o contexto WebGL para o marcador 3D.
+- `POST /api/matching` com Zod, timeout de 15 s, limites de lote e tratamento de 429/5xx.
+- Player determinístico com play/pause, seek, teclado, velocidade, 2D/3D e tela cheia.
+- Lista de vias/manobras, diagnósticos e correção reversível do nome de exibição.
+- Salvamento explícito de rascunho local sem respostas de provider.
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Para ativar o renderer e matching, copie `.env.example` para `.env.local`, preencha `NEXT_PUBLIC_MAPBOX_TOKEN` com token público restrito por URL e `MAPBOX_SECRET_TOKEN` com token server-side. Não comite `.env.local`. Geocoding, IndexedDB e exportação de vídeo continuam fora desta entrega.
